@@ -4,7 +4,7 @@ A macOS Tahoe-inspired rice for [Hyprland](https://hypr.land/) on Arch Linux.
 Floating glass topbar (Waybar), macOS-style dock (nwg-dock-hyprland), liquid-glass
 notifications (swaync), McMojave cursors, and a forest wallpaper.
 
-![preview](preview.png)
+![preview](preview1.png)
 
 ## Features
 
