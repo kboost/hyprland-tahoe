@@ -1,0 +1,29 @@
+/* macOS-like dock for nwg-dock-hyprland */
+
+window {
+  background: rgba(28, 28, 30, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 6px 10px;
+  margin: 0 0 8px 0;
+}
+
+button, image {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 4px 6px;
+}
+
+button {
+  border-radius: 12px;
+  transition: 200ms ease;
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+#pinned-box, #client-box {
+  padding: 0 4px;
+}
