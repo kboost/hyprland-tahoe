@@ -2,15 +2,30 @@
 
 A macOS Tahoe-inspired rice for [Hyprland](https://hypr.land/) on Arch Linux.
 Floating glass topbar (Waybar), macOS-style dock (nwg-dock-hyprland), liquid-glass
-notifications (swaync), McMojave cursors, and a forest wallpaper.
+notifications (swaync), eww popups (powermenu / netmenu / volmenu), McMojave
+cursors, and a forest wallpaper.
 
-![preview](preview1.png)
+![preview](preview.png)
 
 ## Features
 
 - **Floating Waybar** with rounded corners and Liquid Glass effect — Arch logo,
-  workspace pills, active window, dynamic island (mpris + clock + wttr.in weather),
-  launchpad button, tray, network, volume, battery, notifications.
+  workspace pills, active window, **dynamic island** (mpris + clock + weather),
+  launchpad, tray, network, volume, battery, notifications, power.
+- **Dynamic Island** with adaptive transitions and weather-aware hover
+  animations — sun rays during the day, moon halo at night, falling drop for
+  rain, lightning flashes for storms, frozen shimmer for cold/snow. The clock
+  has a slow breathing glow and mpris pulses in cyan while playing.
+- **Smart weather module** (`waybar/scripts/weather.sh`) — single request to
+  `wttr.in` (j1), real sunrise/sunset to pick the day/night icon (sun ↔ moon),
+  Spanish descriptions, full pango tooltip with feels-like temperature,
+  humidity, wind, sunrise and sunset.
+- **eww popups** triggered from the bar:
+  - **Powermenu** — avatar, username, host, uptime, and entries for Settings,
+    Lock, Suspend, Logout and Power off (cosmic-settings-style icons).
+  - **Netmenu** — local IP, gateway, public IP and live download/upload
+    speeds, derived from the kernel without depending on NetworkManager.
+  - **Volmenu** — slider with mute toggle, current sink name, percentage.
 - **nwg-dock-hyprland** dock at the bottom in resident mode with glass styling.
 - **swaync** notifications and control center themed to match (translucent,
   rounded, soft shadows, Apple-style close buttons).
@@ -49,17 +64,36 @@ After that, log into a Hyprland session.
 
 ### Weather city
 
-The dynamic island shows weather for **La Serena, Chile** by default. Change it
-in `~/.config/waybar/config`:
+The weather defaults to **La Serena, Chile**. Change it in
+`~/.config/waybar/scripts/weather.sh`:
 
-```jsonc
-"custom/weather": {
-  "exec": "curl -s --max-time 5 'https://wttr.in/<YourCity>?format=%c+%t&lang=es' || echo '...'",
-  ...
-}
+```bash
+LOCATION="La+Serena"        # use + for spaces, e.g. "Buenos+Aires"
+LOCATION_PRETTY="La Serena" # display name in the tooltip
 ```
 
-Then `pkill waybar && waybar &`.
+The script does a single `wttr.in?format=j1` request, then derives the temperature,
+weather description, sunrise/sunset and day/night state. Reload with
+`pkill -SIGRTMIN+8 waybar` to refresh without a full restart, or `pkill waybar &&
+waybar &` for a hard restart.
+
+### Cold threshold
+
+The frozen-shimmer animation triggers when the temperature drops below 5°C.
+Edit `COLD_THRESHOLD` at the top of `weather.sh` to adjust.
+
+### Locale (date in Spanish)
+
+The clock tooltip shows the date with whatever locale your system has. To get
+day and month names in Spanish, generate the locale:
+
+```bash
+sudo sed -i 's/^#es_CL.UTF-8/es_CL.UTF-8/' /etc/locale.gen
+sudo locale-gen
+```
+
+Then add `"locale": "es_CL.UTF-8"` to the `clock` block in
+`~/.config/waybar/config`.
 
 ### Dock pinned apps
 
@@ -84,13 +118,23 @@ pkill swaybg && swaybg -i ~/Pictures/Wallpapers/forest.jpg -m fill &
 ```
 ~/.config/
 ├── hypr/
-│   ├── hyprland.conf       # main compositor config + autostart
+│   ├── hyprland.conf       # main compositor config + autostart + blur layerrules
 │   ├── hypridle.conf       # idle/lock timing
 │   ├── hyprlock.conf       # lock screen
 │   └── hyprpaper.conf      # kept for reference (swaybg is used at runtime)
 ├── waybar/
 │   ├── config              # modules + behaviour
-│   └── style.css           # Tahoe glass styling
+│   ├── style.css           # Tahoe glass styling + dynamic island animations
+│   └── scripts/
+│       └── weather.sh      # wttr.in JSON, day/night, weather class, tooltip
+├── eww/
+│   ├── eww.yuck            # popup definitions (powermenu, netmenu, volmenu)
+│   ├── eww.scss            # popup styling
+│   └── scripts/
+│       ├── network.sh      # NetworkManager-free net info
+│       ├── volume.sh       # wpctl wrapper
+│       ├── battery.sh      # /sys/class/power_supply
+│       └── active-window.sh
 ├── nwg-dock-hyprland/
 │   └── style.css           # dock styling
 └── swaync/
@@ -98,10 +142,38 @@ pkill swaybg && swaybg -i ~/Pictures/Wallpapers/forest.jpg -m fill &
     └── style.css           # control center + popup styling
 ```
 
+## Dynamic Island animations
+
+All animations live in `~/.config/waybar/style.css` as `@keyframes` blocks.
+They are driven by classes set on the weather module by `weather.sh`:
+
+| Class           | When                                    | Animation                         |
+| --------------- | --------------------------------------- | --------------------------------- |
+| `day`           | Sun is up                               | Warm sun rays glow on hover       |
+| `night`         | Sun is down                             | Cool moon halo on hover           |
+| `rain`          | weatherCode 176/263/293/.../359         | Falling blue drop pulse on hover  |
+| `storm`         | weatherCode 200/386/389/392/395         | Lightning flash on hover          |
+| `snow`/`sleet`  | weatherCode 227/230/3xx                 | Frozen icy shimmer on hover       |
+| `cold`          | temp ≤ 5°C (additive)                   | Frozen shimmer on hover           |
+
+Independent of weather, the **clock** breathes once every 4 s and **mpris**
+pulses cyan while playing. Hovering any of the three pills (mpris, clock,
+weather) expands its padding with a `cubic-bezier(0.32, 0.72, 0, 1)` easing
+curve (the iOS spring) — that is the "adaptive" island behaviour.
+
 ## Notes
 
-- Glyphs come from `JetBrainsMono Nerd Font`. The Waybar config embeds them as
-  raw UTF-8 bytes (e.g. ``, ``, ``) in the Private Use Area.
+- Glyphs come from `JetBrainsMono Nerd Font`. The configs embed them as raw
+  UTF-8 bytes (e.g. ``, ``, ``) in the Private Use Area
+  (`U+F000`–`U+F8FF`). If you copy these files through an editor or clipboard
+  that strips non-renderable characters, the glyphs may disappear and you will
+  see empty squares — re-paste them or run `python3` with the codepoints
+  (`chr(0xF013)` etc.) to restore them.
+- The eww SCSS uses **only ASCII** in comments. Non-ASCII chars in comments
+  cause `grass-rs` to inject `@charset "UTF-8";` into the compiled CSS, which
+  GTK CSS rejects with "unknown @ rule".
+- Hyprland blur for eww popups requires both a `layerrule { blur = true; ... }`
+  matching the namespace and an `hyprctl reload` after the rule is added.
 - `hyprpaper` is replaced by `swaybg` because `hyprpaper` fails on QEMU/virtio
   with `eglQueryDeviceStringEXT EGL_BAD_PARAMETER`. On bare metal you can switch
   back by replacing `exec-once = swaybg ...` with `exec-once = hyprpaper` in

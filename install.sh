@@ -21,6 +21,7 @@ c_blue "==> Instalando paquetes con pacman"
 PKGS=(
   hyprland hyprpaper hyprlock hypridle
   waybar nwg-dock-hyprland swaybg swaync
+  eww socat                                 # eww popups + listener for active-window.sh
   kitty wofi nautilus
   ttf-jetbrains-mono-nerd ttf-font-awesome
   wl-clipboard cliphist
@@ -35,7 +36,7 @@ sudo pacman -S --needed --noconfirm "${PKGS[@]}"
 # 2. Backup existing configs
 c_blue "==> Backup de configs existentes en $BACKUP_DIR"
 mkdir -p "$BACKUP_DIR"
-for d in hypr waybar nwg-dock-hyprland swaync; do
+for d in hypr waybar nwg-dock-hyprland swaync eww; do
   if [[ -d "$HOME/.config/$d" ]]; then
     cp -r "$HOME/.config/$d" "$BACKUP_DIR/" 2>/dev/null || true
   fi
@@ -93,6 +94,8 @@ echo "     o reinicia tu sesión si ya estás en Hyprland."
 echo "  2. Para pinear apps al dock: abre la app, click derecho"
 echo "     en su icono del dock → Pin."
 echo "  3. El clima por defecto es La Serena, Chile. Para cambiarlo:"
-echo "     edita ~/.config/waybar/config → modulo custom/weather → URL wttr.in/<TuCiudad>"
+echo "     edita ~/.config/waybar/scripts/weather.sh → variable LOCATION."
+echo "  4. Si quieres fechas en español en el tooltip del reloj:"
+echo "     sudo sed -i 's/^#es_CL.UTF-8/es_CL.UTF-8/' /etc/locale.gen && sudo locale-gen"
 echo
 echo "Tu config previa se guardó en: $BACKUP_DIR"
