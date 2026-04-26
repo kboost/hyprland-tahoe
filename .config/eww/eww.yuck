@@ -1,0 +1,241 @@
+; ───────────────────────────────────────────────────────────────
+;  Topbar estilo macOS
+; ───────────────────────────────────────────────────────────────
+
+(defpoll clock_time   :interval "10s" "date +'%H:%M'")
+(defpoll clock_date   :interval "60s" "date +'%a %d %b'")
+(defpoll battery_pct  :interval "30s" "~/.config/eww/scripts/battery.sh pct")
+(defpoll battery_ico  :interval "30s" "~/.config/eww/scripts/battery.sh icon")
+(defpoll volume_pct   :interval "2s"  "~/.config/eww/scripts/volume.sh pct")
+(defpoll volume_ico   :interval "2s"  "~/.config/eww/scripts/volume.sh icon")
+(defpoll volume_sink  :interval "5s"  :initial "Salida" "~/.config/eww/scripts/volume.sh sink-name")
+(defpoll net_ico      :interval "5s"  "~/.config/eww/scripts/network.sh icon")
+(defpoll net_name     :interval "10s" "~/.config/eww/scripts/network.sh name")
+(defpoll net_iface    :interval "10s" "~/.config/eww/scripts/network.sh iface")
+(defpoll net_localip  :interval "10s" "~/.config/eww/scripts/network.sh local-ip")
+(defpoll net_gateway  :interval "30s" "~/.config/eww/scripts/network.sh gateway")
+(defpoll net_publicip :interval "60s" "~/.config/eww/scripts/network.sh public-ip")
+(defpoll net_rx       :interval "2s"  "~/.config/eww/scripts/network.sh rx-speed")
+(defpoll net_tx       :interval "2s"  "~/.config/eww/scripts/network.sh tx-speed")
+(deflisten active_win :initial "Escritorio" "~/.config/eww/scripts/active-window.sh")
+(defpoll user_name    :interval "3600s" :initial "user" "whoami")
+(defpoll user_host    :interval "3600s" :initial "Arch Linux" "cat /etc/hostname 2>/dev/null || echo Arch")
+(defpoll user_initial :interval "3600s" :initial "U" "whoami | head -c1 | tr a-z A-Z")
+(defpoll uptime_pretty :interval "60s"  :initial "—" "uptime -p 2>/dev/null | sed 's/^up //'")
+
+; ── Widgets ────────────────────────────────────────────────────
+
+(defwidget left []
+  (box :class "section left" :space-evenly false :spacing 14 :halign "start"
+    (label :class "logo" :text "")
+    (label :class "appname" :text active_win)))
+
+(defwidget right []
+  (box :class "section right" :space-evenly false :spacing 14 :halign "end"
+    (box :class "tray" :space-evenly false :spacing 10
+      (eventbox :class "netbtn"
+                :cursor "pointer"
+                :tooltip net_name
+                :onclick "eww open --toggle netmenu &"
+        (label :class "ico" :text net_ico))
+      (label :class "ico" :text volume_ico)
+      (label :class "ico" :text "${battery_ico} ${battery_pct}%"))
+    (label :class "clock" :text clock_time)
+    (powerbutton)))
+
+(defwidget powerbutton []
+  (eventbox :class "powerbtn"
+            :tooltip "Sistema"
+            :cursor "pointer"
+            :onclick "eww open --toggle powermenu &"
+    (label :class "powerico" :text "")))
+
+(defwidget topbar []
+  (centerbox :class "topbar"
+    (left)
+    (box)        ; centro vacío para look más limpio (la fecha va a la derecha)
+    (right)))
+
+; ── Ventana ────────────────────────────────────────────────────
+
+(defwindow topbar
+  :monitor 0
+  :geometry (geometry :x "0px"
+                      :y "0px"
+                      :width "100%"
+                      :height "32px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  :namespace "eww-topbar"
+  (topbar))
+
+; ───────────────────────────────────────────────────────────────
+;  Dock estilo macOS
+; ───────────────────────────────────────────────────────────────
+
+(defwidget dockitem [iconpath cmd ?tooltip]
+  (eventbox :class "dockitem"
+            :tooltip { tooltip ?: "" }
+            :cursor "pointer"
+            :onclick "${cmd} &"
+    (image :class "dockicon" :path iconpath :image-width 44 :image-height 44)))
+
+(defwidget dock []
+  (box :class "dock" :space-evenly false :spacing 6 :halign "center"
+    (dockitem :iconpath "/usr/share/pixmaps/kitty.png"
+              :cmd "kitty" :tooltip "Terminal")
+    (dockitem :iconpath "/usr/share/icons/hicolor/128x128/apps/firefox.png"
+              :cmd "firefox" :tooltip "Firefox")
+    (dockitem :iconpath "/usr/share/icons/Pop/128x128/apps/nautilus.svg"
+              :cmd "nautilus" :tooltip "Archivos")
+    (dockitem :iconpath "/usr/share/icons/Pop/128x128/categories/applications-other.svg"
+              :cmd "wofi --show drun" :tooltip "Apps")
+    (dockitem :iconpath "/usr/share/icons/Pop/256x256/apps/accessories-text-editor.svg"
+              :cmd "kitty -e nvim ~/.config/hypr/hyprland.conf" :tooltip "Config Hyprland")
+    (dockitem :iconpath "/usr/share/icons/Pop/256x256/categories/preferences-desktop-notification-bell.svg"
+              :cmd "swaync-client -t" :tooltip "Notificaciones")
+    (dockitem :iconpath "/usr/share/icons/Pop/256x256/actions/system-lock-screen.svg"
+              :cmd "hyprlock" :tooltip "Bloquear")))
+
+; ───────────────────────────────────────────────────────────────
+;  Power menu (popup desde el botón de la topbar)
+; ───────────────────────────────────────────────────────────────
+
+(defwidget menuitem [icon label cmd]
+  (eventbox :class "menuitem"
+            :cursor "pointer"
+            :onclick "eww close powermenu && ${cmd} &"
+    (box :space-evenly false :spacing 12
+      (label :class "menuicon" :text icon)
+      (label :class "menulabel" :text label :halign "start" :hexpand true))))
+
+(defwidget menuitem-danger [icon label cmd]
+  (eventbox :class "menuitem danger"
+            :cursor "pointer"
+            :onclick "eww close powermenu && ${cmd} &"
+    (box :space-evenly false :spacing 12
+      (label :class "menuicon" :text icon)
+      (label :class "menulabel" :text label :halign "start" :hexpand true))))
+
+(defwidget powerheader []
+  (box :class "powerheader" :space-evenly false :spacing 12
+    (box :class "avatar-wrap"
+      (label :class "avatar" :text user_initial))
+    (box :orientation "v" :space-evenly false :halign "start" :hexpand true :valign "center"
+      (label :class "username" :text user_name :halign "start")
+      (label :class "usermeta" :text "${user_host}  ·  ${uptime_pretty}" :halign "start"))))
+
+(defwidget powermenu []
+  (box :class "powermenu" :orientation "v" :space-evenly false :spacing 2
+    (powerheader)
+    (box :class "menudivider")
+    (menuitem :icon "" :label "Configuración"
+              :cmd "cosmic-settings")
+    (menuitem :icon "" :label "Bloquear"
+              :cmd "hyprlock")
+    (menuitem :icon "" :label "Suspender"
+              :cmd "systemctl suspend")
+    (box :class "menudivider")
+    (menuitem :icon "" :label "Cerrar sesión"
+              :cmd "hyprctl dispatch exit")
+    (menuitem-danger :icon "" :label "Apagar"
+                     :cmd "systemctl poweroff")))
+
+(defwindow powermenu
+  :monitor 0
+  :geometry (geometry :x "8px"
+                      :y "44px"
+                      :width "260px"
+                      :anchor "top right")
+  :stacking "fg"
+  :exclusive false
+  :namespace "eww-powermenu"
+  (powermenu))
+
+; ───────────────────────────────────────────────────────────────
+;  Network menu (popup desde el icono de red)
+; ───────────────────────────────────────────────────────────────
+
+(defwidget netrow [label value]
+  (box :class "netrow" :space-evenly false :spacing 10
+    (label :class "netrow-label" :text label :halign "start")
+    (label :class "netrow-value" :text value :halign "end" :hexpand true)))
+
+(defwidget netspeed [class icon value]
+  (box :orientation "v" :space-evenly false :halign "center" :hexpand true
+    (label :class "speed-icon ${class}" :text icon)
+    (label :class "speed-value" :text value)))
+
+(defwidget netmenu []
+  (box :class "netmenu" :orientation "v" :space-evenly false :spacing 0
+    (box :class "netheader" :space-evenly false :spacing 12
+      (label :class "netheader-icon" :text net_ico)
+      (box :orientation "v" :space-evenly false :halign "start" :hexpand true
+        (label :class "netheader-name"  :text net_name  :halign "start")
+        (label :class "netheader-iface" :text net_iface :halign "start")))
+    (box :class "netdivider")
+    (netrow :label "Local"   :value net_localip)
+    (netrow :label "Gateway" :value net_gateway)
+    (netrow :label "Pública" :value net_publicip)
+    (box :class "netdivider")
+    (box :class "netspeeds" :space-evenly true
+      (netspeed :class "down" :icon "" :value net_rx)
+      (netspeed :class "up"   :icon "" :value net_tx))))
+
+(defwindow netmenu
+  :monitor 0
+  :geometry (geometry :x "120px"
+                      :y "46px"
+                      :width "260px"
+                      :anchor "top right")
+  :stacking "fg"
+  :exclusive false
+  :namespace "eww-netmenu"
+  (netmenu))
+
+; ───────────────────────────────────────────────────────────────
+;  Volume menu (popup desde pulseaudio en waybar)
+; ───────────────────────────────────────────────────────────────
+
+(defwidget volmenu []
+  (box :class "volmenu" :orientation "v" :space-evenly false :spacing 0
+    (box :class "volheader" :space-evenly false :spacing 12
+      (label :class "volheader-icon" :text volume_ico)
+      (box :orientation "v" :space-evenly false :halign "start" :hexpand true :valign "center"
+        (label :class "volheader-name" :text volume_sink :halign "start")
+        (label :class "volheader-sub"  :text "Salida"    :halign "start")))
+    (box :class "menudivider")
+    (box :class "volslider-row" :space-evenly false :spacing 12
+      (eventbox :class "volmute"
+                :cursor "pointer"
+                :tooltip "Silenciar / Reactivar"
+                :onclick "~/.config/eww/scripts/volume.sh toggle"
+        (label :class "volmute-icon" :text volume_ico))
+      (scale :class "volscale" :hexpand true
+             :min 0 :max 100 :value volume_pct
+             :onchange "~/.config/eww/scripts/volume.sh set {}")
+      (label :class "volpct" :text "${volume_pct}%"))))
+
+(defwindow volmenu
+  :monitor 0
+  :geometry (geometry :x "60px"
+                      :y "46px"
+                      :width "320px"
+                      :anchor "top right")
+  :stacking "fg"
+  :exclusive false
+  :namespace "eww-volmenu"
+  (volmenu))
+
+(defwindow dock
+  :monitor 0
+  :geometry (geometry :x "0px"
+                      :y "10px"
+                      :width "460px"
+                      :height "72px"
+                      :anchor "bottom center")
+  :stacking "fg"
+  :exclusive false
+  :namespace "eww-dock"
+  (dock))

@@ -1,13 +1,20 @@
-/* macOS-like dock for nwg-dock-hyprland */
+/* nwg-dock-hyprland — Tahoe Liquid Glass dock
+   El blur lo da Hyprland (layerrule blur-nwg-dock); aquí solo bajamos
+   opacidad y añadimos los detalles ópticos: inset highlight + sombra. */
 
 window {
-  background: rgba(28, 28, 30, 0.78);
+  background: rgba(28, 28, 30, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 18px;
-  padding: 6px 10px;
+  border-radius: 20px;
+  padding: 8px 12px;
   margin: 0 0 8px 0;
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  color: #f5f5f7;
 }
 
+/* Cada icono es un button + image */
 button, image {
   background: none;
   border: none;
@@ -16,14 +23,81 @@ button, image {
 }
 
 button {
-  border-radius: 12px;
-  transition: 200ms ease;
+  border-radius: 14px;
+  margin: 0 2px;
+  transition: background 180ms ease;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 button:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
 }
 
-#pinned-box, #client-box {
+button:active {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Containers: pinned (apps fijos) y client (apps abiertas) */
+#pinned-box {
+  padding: 0 6px;
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+  margin-right: 8px;
+}
+
+#client-box {
   padding: 0 4px;
+}
+
+/* Tooltip estilo waybar */
+tooltip {
+  background: rgba(28, 28, 30, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+}
+
+tooltip label {
+  color: #f5f5f7;
+  padding: 6px 10px;
+}
+
+/* Menú contextual (right-click sobre icono): "Cerrar", "Mover a workspace", etc.
+   Sin estilo explícito GTK lo dibuja blanco/transparente sobre nuestro window. */
+menu, popover, popover.background, popover contents {
+  background: rgba(28, 28, 30, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  color: #f5f5f7;
+}
+
+menuitem, .menuitem {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin: 1px 0;
+  color: #f5f5f7;
+  transition: background 180ms ease;
+}
+
+menuitem:hover, .menuitem:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+menuitem label, .menuitem label {
+  color: #f5f5f7;
+  padding: 0 4px;
+}
+
+menuitem:hover label, .menuitem:hover label {
+  color: #ffffff;
+}
+
+separator, menu separator, popover separator {
+  background: rgba(255, 255, 255, 0.10);
+  min-height: 1px;
+  margin: 4px 2px;
 }

@@ -1,0 +1,398 @@
+/* Reset */
+
+* {
+  all: unset;
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
+  font-size: 13px;
+  color: #f5f5f7;
+}
+
+window {
+  background: transparent;
+}
+
+/* Topbar (legacy fallback - waybar es la barra real) */
+
+.topbar {
+  background: rgba(28, 28, 30, 0.55);
+  padding: 0 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.section {
+  padding: 4px 0;
+}
+
+.logo {
+  font-size: 15px;
+  margin-right: 6px;
+  color: #ffffff;
+}
+
+.appname {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.datetime-center {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.tray {
+  padding: 0 10px;
+}
+
+.ico {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+}
+
+.ico:hover {
+  color: #ffffff;
+}
+
+.clock {
+  font-weight: 600;
+  padding-left: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Power button (en topbar) */
+
+.powerbtn {
+  padding: 2px 8px;
+  margin-left: 6px;
+  border-radius: 8px;
+  transition: background 200ms ease;
+}
+
+.powerbtn:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.powerbtn:active {
+  background: rgba(255, 69, 58, 0.22);
+}
+
+.powerico {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.powerbtn:hover .powerico {
+  color: #ffffff;
+}
+
+/* Power menu (Tahoe-style Liquid Glass - estilo cosmic-settings) */
+
+.powermenu {
+  background: rgba(28, 28, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 10px;
+  margin: 10px;
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.60),
+    0 4px 12px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Header: avatar + user info - prominente y respirado */
+.powerheader {
+  padding: 6px 6px 12px 6px;
+}
+
+.avatar-wrap {
+  background-image: linear-gradient(135deg, #5ac8fa, #007aff);
+  background-color: #007aff;        /* fallback si gradient falla */
+  border-radius: 999px;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    0 2px 6px rgba(0, 122, 255, 0.45);
+  margin-right: 4px;
+}
+
+.avatar {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.usermeta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.60);
+  margin-top: 1px;
+}
+
+/* Menu items - con iconos circulares de fondo (como cosmic-settings) */
+.menuitem {
+  padding: 9px 10px;
+  border-radius: 12px;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.menuitem:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.menuitem:active {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.menuitem.danger:hover {
+  background: rgba(255, 69, 58, 0.22);
+}
+
+.menuicon {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.92);
+  min-width: 28px;
+  min-height: 28px;
+  padding: 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menuitem.danger .menuicon {
+  background: rgba(255, 69, 58, 0.16);
+  color: #ff5f56;
+}
+
+.menulabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.menuitem:hover .menuicon {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.menuitem.danger:hover .menuicon {
+  background: rgba(255, 69, 58, 0.30);
+  color: #ff5f56;
+}
+
+.menuitem:hover .menulabel {
+  color: #ffffff;
+}
+
+.menuitem.danger .menulabel {
+  color: #ff5f56;
+}
+
+.menudivider {
+  background: rgba(255, 255, 255, 0.10);
+  min-height: 1px;
+  margin: 8px 6px;
+}
+
+/* Network button (en topbar) */
+
+.netbtn {
+  padding: 0 4px;
+  border-radius: 6px;
+  transition: background 200ms ease;
+}
+
+.netbtn:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+/* Network menu (popup) */
+
+.netmenu {
+  background: rgba(28, 28, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 6px;
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.netheader {
+  padding: 2px 2px 6px 2px;
+}
+
+.netheader-icon {
+  font-size: 22px;
+  color: #ffffff;
+  min-width: 28px;
+}
+
+.netheader-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.netheader-iface {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.netdivider {
+  background: rgba(255, 255, 255, 0.10);
+  min-height: 1px;
+  margin: 8px 0;
+}
+
+.netrow {
+  padding: 4px 2px;
+}
+
+.netrow-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.60);
+}
+
+.netrow-value {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", monospace;
+}
+
+.netspeeds {
+  padding: 6px 0 2px 0;
+}
+
+.speed-icon {
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.speed-icon.down { color: #34c759; }
+.speed-icon.up   { color: #007aff; }
+
+.speed-value {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", monospace;
+}
+
+/* Volume menu (Tahoe Liquid Glass) */
+
+.volmenu {
+  background: rgba(28, 28, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 6px;
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.volheader {
+  padding: 2px 2px 6px 2px;
+}
+
+.volheader-icon {
+  font-size: 22px;
+  color: #ffffff;
+  min-width: 28px;
+}
+
+.volheader-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.volheader-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.volslider-row {
+  padding: 8px 2px 4px 2px;
+}
+
+.volmute {
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: background 180ms ease;
+}
+
+.volmute:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.volmute-icon {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.92);
+  min-width: 18px;
+}
+
+scale.volscale trough {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: 999px;
+  min-height: 5px;
+}
+
+scale.volscale highlight {
+  background: linear-gradient(90deg, #5ac8fa, #007aff);
+  border-radius: 999px;
+  border: none;
+}
+
+scale.volscale slider {
+  background: #ffffff;
+  border-radius: 999px;
+  min-width: 14px;
+  min-height: 14px;
+  margin: -6px;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.volpct {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", monospace;
+  min-width: 40px;
+}
+
+/* Dock (legacy fallback - nwg-dock-hyprland es el dock real) */
+
+.dock {
+  background: rgba(28, 28, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  padding: 8px 12px;
+  margin: 0 8px 6px 8px;
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.dockitem {
+  padding: 4px 6px;
+  border-radius: 14px;
+  transition: background 200ms ease;
+}
+
+/* Sin margin-bottom hover para evitar reflow del resto de iconos */
+.dockitem:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.dockitem:active {
+  background: rgba(255, 255, 255, 0.22);
+}
