@@ -1,7 +1,7 @@
-/* swaync — Liquid Glass Tahoe */
+/* swaync — Liquid Glass Tahoe (compact + dissolve) */
 
 * {
-  font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
+  font-family: "SF Pro Text", "SF Pro", system-ui, sans-serif;
   font-size: 13px;
 }
 
@@ -11,7 +11,7 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px;
   color: #f5f5f7;
-  padding: 14px;
+  padding: 12px;
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -23,8 +23,8 @@
 
 /* Title row */
 .widget-title {
-  margin: 4px 4px 12px 4px;
-  font-size: 14px;
+  margin: 4px 4px 10px 4px;
+  font-size: 13px;
   font-weight: 600;
   color: #ffffff;
 }
@@ -33,7 +33,7 @@
   background: rgba(255, 255, 255, 0.10);
   border: none;
   border-radius: 10px;
-  padding: 6px 12px;
+  padding: 4px 10px;
   color: #f5f5f7;
   transition: 200ms ease;
 }
@@ -44,7 +44,7 @@
 
 /* DND switch */
 .widget-dnd {
-  margin: 4px 4px 12px 4px;
+  margin: 4px 4px 10px 4px;
   color: #f5f5f7;
 }
 
@@ -68,10 +68,10 @@
 
 /* Mpris widget */
 .widget-mpris {
-  margin: 4px 0 12px 0;
+  margin: 4px 0 10px 0;
   background: rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
-  padding: 10px;
+  border-radius: 12px;
+  padding: 8px;
   color: #f5f5f7;
 }
 
@@ -81,23 +81,23 @@
 
 .widget-mpris-title {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .widget-mpris-subtitle {
   color: rgba(255, 255, 255, 0.70);
 }
 
-/* Notifications */
+/* Notifications inside control center */
 .notification-row {
-  margin: 6px 0;
+  margin: 4px 0;
   background: transparent;
 }
 
 .notification-background .notification {
   background: rgba(255, 255, 255, 0.07);
-  border-radius: 14px;
-  padding: 12px;
+  border-radius: 12px;
+  padding: 8px 10px;
   color: #f5f5f7;
   border: 1px solid rgba(255, 255, 255, 0.06);
   transition: 200ms ease;
@@ -114,22 +114,23 @@
 
 .summary {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   color: #ffffff;
 }
 
 .body {
-  color: rgba(245, 245, 247, 0.85);
+  color: rgba(245, 245, 247, 0.82);
+  font-size: 12px;
 }
 
 .notification-action,
 .notification-default-action {
   background: rgba(255, 255, 255, 0.10);
   border: none;
-  border-radius: 10px;
-  padding: 6px 10px;
+  border-radius: 8px;
+  padding: 4px 8px;
   color: #f5f5f7;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .notification-action:hover,
@@ -142,28 +143,43 @@
   border: none;
   border-radius: 999px;
   color: #ffffff;
-  padding: 2px 6px;
-  margin: 4px;
-  min-width: 18px;
-  min-height: 18px;
-  font-size: 11px;
+  padding: 1px 5px;
+  margin: 3px;
+  min-width: 16px;
+  min-height: 16px;
+  font-size: 10px;
 }
 
 .close-button:hover {
   background: rgba(255, 95, 86, 1.0);
 }
 
-/* Floating popup notifications */
+/* Contenedor padre transparente — evita que se vea como un panel grande */
+.floating-notifications,
+.floating-notifications.background,
+.floating-notifications-list {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Floating popup notifications — compact + dissolve transition */
 .floating-notifications.background .notification {
   background: rgba(28, 28, 30, 0.78);
-  border-radius: 16px;
-  padding: 14px;
-  margin: 10px;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 6px;
   color: #f5f5f7;
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.45),
+    0 8px 22px rgba(0, 0, 0, 0.40),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  /* Long, eased transitions so the natural fade-out feels like dispersion */
+  transition:
+    opacity 600ms cubic-bezier(0.55, 0, 1, 0.40),
+    box-shadow 600ms ease-out,
+    border-color 600ms ease-out,
+    background 600ms ease-out;
 }
 
 .floating-notifications.background .notification.critical {

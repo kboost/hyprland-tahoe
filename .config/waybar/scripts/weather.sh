@@ -149,12 +149,18 @@ loc_e=$(pango_escape "$LOCATION_PRETTY")
 [[ -z "$humid" ]] && humid="—"
 [[ -z "$wind"  ]] && wind="—"
 
-# Construir tooltip multilínea (\n se respeta en pango markup de waybar)
-tooltip="<b>${loc_e}</b>  ·  ${desc_e}\n"
-tooltip+="${emoji}  <b>${temp_str}</b>   sens. ${feels}°C\n"
-tooltip+="\n"
-tooltip+="💧  ${humid}%      💨  ${wind} km/h\n"
-tooltip+="🌅  ${sunrise}    🌇  ${sunset}"
+# Construir tooltip multilínea con saltos REALES (no literales \n).
+# El json_escape de abajo convierte newlines reales a "\n" JSON, que waybar
+# parsea de vuelta a saltos. Si pones "\n" aquí, el escape los duplica y se ven
+# literales en pantalla.
+tooltip=$(cat <<EOF
+<b>${loc_e}</b>  ·  ${desc_e}
+${emoji}  <b>${temp_str}</b>   sens. ${feels}°C
+
+💧  ${humid}%      💨  ${wind} km/h
+🌅  ${sunrise}    🌇  ${sunset}
+EOF
+)
 
 # ── JSON output ────────────────────────────────────────────────
 json_escape() {

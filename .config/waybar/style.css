@@ -1,7 +1,7 @@
 /* macOS Tahoe-like floating topbar — Liquid Glass */
 
 * {
-  font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
+  font-family: "SF Pro Text", "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
   font-size: 13px;
   min-height: 0;
   border: none;
@@ -10,63 +10,25 @@
   padding: 0;
 }
 
-/* Floating bar with glass effect */
+/* Floating bar — Liquid Glass Tahoe (más translúcido) */
 window#waybar {
   background: transparent;
 }
 
 #waybar > box {
-  background: rgba(28, 28, 30, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  /* Vidrio gris OSCURO translúcido — sin tinte blanco */
+  background: rgba(45, 45, 50, 0.45);
+  border: 1px solid rgba(90, 90, 96, 0.40);
   border-radius: 14px;
+  /* Bisel sólo con sombras oscuras, sin highlights claros */
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    0 8px 24px rgba(0, 0, 0, 0.40),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20);
   padding: 0 6px;
   color: #f5f5f7;
 }
 
-/* ─── Dynamic Island animations ────────────────────────────────── */
-
-/* Clock — slow breathing glow (4s) */
-@keyframes clock-breath {
-  from {
-    background-color: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  }
-  50% {
-    background-color: rgba(255, 255, 255, 0.13);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.16),
-      0 0 14px rgba(255, 255, 255, 0.10);
-  }
-  to {
-    background-color: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  }
-}
-
-/* Weather — flowing aurora (cyan ↔ amber ↔ violet) */
-@keyframes weather-aurora {
-  from {
-    background-image: linear-gradient(90deg,
-      rgba(90, 200, 250, 0.18) 0%,
-      rgba(255, 255, 255, 0.08) 50%,
-      rgba(255, 159, 10, 0.16) 100%);
-  }
-  50% {
-    background-image: linear-gradient(90deg,
-      rgba(255, 159, 10, 0.18) 0%,
-      rgba(90, 200, 250, 0.10) 50%,
-      rgba(175, 82, 222, 0.16) 100%);
-  }
-  to {
-    background-image: linear-gradient(90deg,
-      rgba(90, 200, 250, 0.18) 0%,
-      rgba(255, 255, 255, 0.08) 50%,
-      rgba(255, 159, 10, 0.16) 100%);
-  }
-}
+/* ─── Dynamic Island — animations (solo hover, sin loops constantes) ──── */
 
 /* Weather (day) hover — sun rays / glow through clouds (1.8s) */
 @keyframes weather-rays {
@@ -191,24 +153,6 @@ window#waybar {
   }
 }
 
-/* Mpris while playing — soft cyan pulse (2.5s) */
-@keyframes mpris-playing-pulse {
-  from {
-    background-color: rgba(90, 200, 250, 0.10);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  }
-  50% {
-    background-color: rgba(90, 200, 250, 0.20);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.18),
-      0 0 16px rgba(90, 200, 250, 0.32);
-  }
-  to {
-    background-color: rgba(90, 200, 250, 0.10);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  }
-}
-
 /* Logo Arch (left) */
 #custom-logo {
   font-size: 17px;
@@ -255,105 +199,102 @@ window#waybar {
   padding: 0 8px;
 }
 
-/* Center: dynamic island (mpris + clock + weather)
-   Each pill animates and expands smoothly when hovered/active */
+/* ── Centro: Dynamic Island — glass más visible que la barra ─────────── */
+.modules-center {
+  /* Gris oscuro (vuelta al tono que querías) — un escalón más claro que la barra */
+  background: rgba(70, 70, 78, 0.55);
+  border: 1px solid rgba(110, 110, 118, 0.45);
+  border-radius: 999px;
+  padding: 2px 4px;
+  margin: 0 6px;
+  /* Bisel elevado en grises */
+  box-shadow:
+    inset 0 1px 0 rgba(140, 140, 148, 0.20),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    0 6px 18px rgba(0, 0, 0, 0.40);
+  transition: padding 380ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Cada módulo es una "sección" transparente del pill.
+   Padding FIJO — no se anima en hover (cambiarlo causa flicker porque el cursor
+   sale del elemento al redimensionarse). El "efecto isla" se simula con glow. */
 #mpris,
 #custom-weather,
 #clock {
+  background-color: transparent;
   border-radius: 999px;
-  margin: 0 4px;
-  min-width: 1px;
-  transition:
-    min-width 380ms cubic-bezier(0.32, 0.72, 0, 1),
-    padding 380ms cubic-bezier(0.32, 0.72, 0, 1),
-    background-color 280ms ease,
-    color 280ms ease,
-    box-shadow 280ms ease;
-}
-
-#mpris,
-#custom-weather {
-  background-color: rgba(255, 255, 255, 0.06);
-  padding: 0 12px;
+  padding: 0 18px;
+  margin: 0;
   color: rgba(255, 255, 255, 0.92);
   font-weight: 500;
+  /* Solo animamos color/bg/box-shadow — propiedades que NO cambian el tamaño */
+  transition:
+    background-color 280ms cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 280ms cubic-bezier(0.32, 0.72, 0, 1),
+    color 200ms ease;
 }
 
+/* Separador entre secciones — gris oscuro */
+#clock,
+#custom-weather {
+  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.20);
+}
+
+/* Hover: bg gris claro + glow exterior gris para "expansión" visual sin redimensionar */
 #mpris:hover,
 #custom-weather:hover,
 #clock:hover {
-  padding: 0 18px;
+  background-color: rgba(190, 190, 198, 0.55);
   color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.16);
+  /* El glow exterior simula que el slot "respira" / se enfoca, sin resize real */
+  box-shadow:
+    inset 0 0 0 1px rgba(220, 220, 228, 0.25),
+    0 0 14px rgba(180, 180, 188, 0.40);
 }
 
+/* mpris reproduciendo: solo cambio de color, sin pulso constante */
 #mpris.playing {
   color: #5ac8fa;
-  animation: mpris-playing-pulse 2.5s ease-in-out infinite;
 }
 
 #mpris.playing:hover {
-  /* Hover wins — pause the pulse so the brighter hover state is steady */
-  animation: none;
-  background-color: rgba(90, 200, 250, 0.26);
+  background-color: rgba(90, 200, 250, 0.18);
   color: #ffffff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 0 18px rgba(90, 200, 250, 0.40);
 }
 
-#custom-weather {
-  animation: weather-aurora 9s ease-in-out infinite;
-}
-
-/* Hover: la animación reemplaza el aurora.
-   Las clases de clima (rain/storm/snow/sleet) tienen mayor especificidad
-   que .day/.night porque vienen después en el orden de cascada. */
+/* Hover por estado del clima — SOLO la animación de texto (color/glow).
+   El fondo gris claro y el glow exterior del hover genérico se preservan
+   para que se vea el efecto isla dinámica unificado. */
 #custom-weather.day:hover {
   animation: weather-rays 1.8s ease-in-out infinite;
 }
 
 #custom-weather.night:hover {
   animation: weather-moon 2.4s ease-in-out infinite;
-  background-color: rgba(110, 150, 220, 0.18);
 }
 
 #custom-weather.rain:hover {
   animation: weather-rain 1.5s ease-in-out infinite;
-  background-color: rgba(80, 140, 220, 0.18);
 }
 
 #custom-weather.storm:hover {
   animation: weather-storm 3.2s linear infinite;
-  background-color: rgba(160, 120, 220, 0.20);
 }
 
 #custom-weather.snow:hover,
-#custom-weather.sleet:hover {
-  animation: weather-cold 2.8s ease-in-out infinite;
-  background-color: rgba(180, 220, 255, 0.18);
-}
-
-/* "cold" se aplica además sobre cualquier otro estado:
-   gana sobre day/night/rain pero no sobre storm (por estética).
-   Los selectores compuestos elevan la especificidad sobre los simples. */
+#custom-weather.sleet:hover,
 #custom-weather.cold:hover {
   animation: weather-cold 2.8s ease-in-out infinite;
-  background-color: rgba(150, 200, 255, 0.18);
 }
 
 #custom-weather.storm.cold:hover {
   animation: weather-storm 3.2s linear infinite;
-  background-color: rgba(160, 120, 220, 0.20);
 }
 
 #clock {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.98);
-  padding: 0 16px;
-  background-color: rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  animation: clock-breath 4s ease-in-out infinite;
+  padding: 0 14px;
 }
 
 /* Right side modules */

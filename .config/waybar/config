@@ -60,7 +60,8 @@
         "weekdays": "<b>{}</b>",
         "today":    "<b><span color='#5ac8fa'>{}</span></b>"
       }
-    }
+    },
+    "on-click": "swaync-client -t"
   },
   "mpris": {
     "format": "{player_icon}  {dynamic}",
@@ -83,7 +84,9 @@
     ],
     "ignored-players": [
       "firefox"
-    ]
+    ],
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl next"
   },
   "custom/weather": {
     "exec": "~/.config/waybar/scripts/weather.sh",
@@ -91,7 +94,8 @@
     "interval": 180,
     "signal": 8,
     "format": "{}",
-    "tooltip": true
+    "tooltip": true,
+    "on-click": "pkill -SIGRTMIN+8 waybar"
   },
   "custom/launchpad": {
     "format": "",

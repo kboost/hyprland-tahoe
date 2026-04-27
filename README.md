@@ -12,10 +12,13 @@ cursors, and a forest wallpaper.
 - **Floating Waybar** with rounded corners and Liquid Glass effect — Arch logo,
   workspace pills, active window, **dynamic island** (mpris + clock + weather),
   launchpad, tray, network, volume, battery, notifications, power.
-- **Dynamic Island** with adaptive transitions and weather-aware hover
-  animations — sun rays during the day, moon halo at night, falling drop for
-  rain, lightning flashes for storms, frozen shimmer for cold/snow. The clock
-  has a slow breathing glow and mpris pulses in cyan while playing.
+- **Dynamic Island** — unified dark-grey glass pill in the center hosting
+  mpris + clock + weather as internal sections. On hover, the active section
+  fills with a lighter grey and gains a soft outer glow without resizing
+  (smooth, no flicker). Weather hover triggers a state-aware animation —
+  sun rays during the day, moon halo at night, falling drop for rain,
+  lightning flashes for storms, frozen shimmer for cold/snow — layered on
+  top of the island highlight. mpris turns cyan while a player is active.
 - **Smart weather module** (`waybar/scripts/weather.sh`) — single request to
   `wttr.in` (j1), real sunrise/sunset to pick the day/night icon (sun ↔ moon),
   Spanish descriptions, full pango tooltip with feels-like temperature,
@@ -27,8 +30,11 @@ cursors, and a forest wallpaper.
     speeds, derived from the kernel without depending on NetworkManager.
   - **Volmenu** — slider with mute toggle, current sink name, percentage.
 - **nwg-dock-hyprland** dock at the bottom in resident mode with glass styling.
-- **swaync** notifications and control center themed to match (translucent,
-  rounded, soft shadows, Apple-style close buttons).
+- **swaync** notifications and control center themed to match — compact toast
+  cards (300 px wide, no inline body images), translucent with soft shadows
+  and Apple-style close buttons. Toast popups use Hyprland's `popin 70%`
+  layer animation so they shrink-and-fade out, dissolving with the
+  compositor blur behind them.
 - **McMojave cursors** from [vinceliuice/McMojave-cursors](https://github.com/vinceliuice/McMojave-cursors).
 - **Forest wallpaper** ("Forest in Bavaria" by Sebastian Unrau, via Unsplash).
 - **swaybg** as the wallpaper daemon (works on QEMU/virtio where hyprpaper fails
@@ -156,10 +162,17 @@ They are driven by classes set on the weather module by `weather.sh`:
 | `snow`/`sleet`  | weatherCode 227/230/3xx                 | Frozen icy shimmer on hover       |
 | `cold`          | temp ≤ 5°C (additive)                   | Frozen shimmer on hover           |
 
-Independent of weather, the **clock** breathes once every 4 s and **mpris**
-pulses cyan while playing. Hovering any of the three pills (mpris, clock,
-weather) expands its padding with a `cubic-bezier(0.32, 0.72, 0, 1)` easing
-curve (the iOS spring) — that is the "adaptive" island behaviour.
+**mpris** turns cyan while a player is active (no constant pulse — kept as a
+quiet color cue). Hovering any internal section (mpris, clock, weather)
+fills it with a lighter grey background and adds a soft outer glow over a
+280 ms `cubic-bezier(0.32, 0.72, 0, 1)` curve (the iOS spring). The pill
+itself stays the same size — the glow simulates the "adaptive" island
+behaviour without resizing the layout (which previously caused hover
+flicker as the cursor exited the resizing element).
+
+> Each center module declares an `on-click` handler so Waybar registers it
+> as an interactive button — required for hover events to fire from the
+> first mouseover instead of waiting for a click.
 
 ## Notes
 
