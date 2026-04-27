@@ -113,7 +113,7 @@
     "tooltip-format-wifi": "<b>{essid}</b>  ·  {signalStrength}%\nIP\t{ipaddr}\nGateway\t{gwaddr}\n↓ {bandwidthDownBytes}\t↑ {bandwidthUpBytes}",
     "tooltip-format-ethernet": "<b>{ifname}</b>  ·  Cableado\nIP\t{ipaddr}\nGateway\t{gwaddr}\n↓ {bandwidthDownBytes}\t↑ {bandwidthUpBytes}",
     "tooltip-format-disconnected": "Desconectado",
-    "on-click": "eww open --toggle netmenu",
+    "on-click": "~/.config/eww/scripts/popup-toggle.sh netmenu",
     "interval": 2
   },
   "pulseaudio": {
@@ -127,7 +127,7 @@
         ""
       ]
     },
-    "on-click": "eww open --toggle volmenu",
+    "on-click": "~/.config/eww/scripts/popup-toggle.sh volmenu",
     "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
   },
   "battery": {
@@ -154,6 +154,6 @@
   "custom/power": {
     "format": "",
     "tooltip": false,
-    "on-click": "eww open --toggle powermenu"
+    "on-click": "~/.config/eww/scripts/popup-toggle.sh powermenu"
   }
 }

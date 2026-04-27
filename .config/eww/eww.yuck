@@ -36,7 +36,7 @@
       (eventbox :class "netbtn"
                 :cursor "pointer"
                 :tooltip net_name
-                :onclick "eww open --toggle netmenu &"
+                :onclick "~/.config/eww/scripts/popup-toggle.sh netmenu &"
         (label :class "ico" :text net_ico))
       (label :class "ico" :text volume_ico)
       (label :class "ico" :text "${battery_ico} ${battery_pct}%"))
@@ -47,7 +47,7 @@
   (eventbox :class "powerbtn"
             :tooltip "Sistema"
             :cursor "pointer"
-            :onclick "eww open --toggle powermenu &"
+            :onclick "~/.config/eww/scripts/popup-toggle.sh powermenu &"
     (label :class "powerico" :text "")))
 
 (defwidget topbar []
@@ -105,7 +105,7 @@
 (defwidget menuitem [icon label cmd]
   (eventbox :class "menuitem"
             :cursor "pointer"
-            :onclick "eww close powermenu && ${cmd} &"
+            :onclick "eww close powermenu popup-catcher && ${cmd} &"
     (box :space-evenly false :spacing 12
       (label :class "menuicon" :text icon)
       (label :class "menulabel" :text label :halign "start" :hexpand true))))
@@ -113,7 +113,7 @@
 (defwidget menuitem-danger [icon label cmd]
   (eventbox :class "menuitem danger"
             :cursor "pointer"
-            :onclick "eww close powermenu && ${cmd} &"
+            :onclick "eww close powermenu popup-catcher && ${cmd} &"
     (box :space-evenly false :spacing 12
       (label :class "menuicon" :text icon)
       (label :class "menulabel" :text label :halign "start" :hexpand true))))
@@ -239,3 +239,21 @@
   :exclusive false
   :namespace "eww-dock"
   (dock))
+
+; ───────────────────────────────────────────────────────────────
+;  Popup catcher: ventana invisible fullscreen detrás de los
+;  popups; un click fuera del popup cae aquí y los cierra.
+; ───────────────────────────────────────────────────────────────
+
+(defwindow popup-catcher
+  :monitor 0
+  :geometry (geometry :x "0%" :y "0%" :width "100%" :height "100%"
+                      :anchor "center center")
+  :stacking "fg"
+  :focusable false
+  :exclusive false
+  :namespace "eww-popup-catcher"
+  (eventbox :class "popup-catcher"
+            :hexpand true :vexpand true
+            :onclick "eww close popup-catcher powermenu netmenu volmenu &"
+    (box)))

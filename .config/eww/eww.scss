@@ -396,3 +396,8 @@ scale.volscale slider {
 .dockitem:active {
   background: rgba(255, 255, 255, 0.22);
 }
+
+/* Catcher transparente que cierra los popups al hacer click fuera */
+.popup-catcher {
+  background: transparent;
+}
