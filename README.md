@@ -46,9 +46,8 @@ cursors, and a forest wallpaper.
 - An active Hyprland session (or willingness to log into one)
 
 ## Install
-
 ```bash
-git clone https://github.com/<your-user>/hyprland-tahoe ~/hyprland-tahoe
+git clone https://github.com/kboost/hyprland-tahoe.git ~/hyprland-tahoe
 cd ~/hyprland-tahoe
 chmod +x install.sh
 ./install.sh
